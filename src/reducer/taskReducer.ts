@@ -18,6 +18,20 @@ export const taskReducer = (state: TaskStateModel, action: TaskActionModel) => {
         tasks: [...state.tasks, newTask]
       }
     }
+    case TaskActionsTypes.COMPLETE_TASK: {
+      return {
+        ...state,
+        activeTask: null,
+        secondsRemaining: 0,
+        formatedSecondsRemaining: '00:00',
+        tasks: state.tasks.map(task => {
+          if (state.activeTask && state.activeTask.id == task.id){
+            return {...task, completedDate: Date.now()}
+          }
+          return task
+        })
+      }
+    }
     case TaskActionsTypes.INTERRUPT_TASK: {
       return {
         ...state,
@@ -26,11 +40,19 @@ export const taskReducer = (state: TaskStateModel, action: TaskActionModel) => {
         formatedSecondsRemaining: '00:00',
         tasks: state.tasks.map(task => {
           if (state.activeTask && state.activeTask.id === task.id) {
-            return { ...task, interruptDate: Date.now() };
+            return { ...task, interruptedDate: Date.now() };
           }
           return task;
         })
       
+      }
+    }
+    case TaskActionsTypes.COUNT_DOWN: {
+      const secondsRemaining = action.payload.secondsRemaining
+      return {
+        ...state,
+        secondsRemaining,
+        formatedSecondsRemaining: formatedSecondsToMinutes(secondsRemaining)
       }
     }
   }

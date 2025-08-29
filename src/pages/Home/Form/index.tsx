@@ -9,6 +9,8 @@ import { useTaskContext } from '../../../hooks/useTaskContext';
 import { getNextCycle } from '../../../utils/getNextCycle';
 import { getNextCycleType } from '../../../utils/getNextCycleType';
 import { TaskActionsTypes } from '../../../reducer/actions/taskActions';
+import { Tips } from '../../../components/Tips/tips';
+import { showMessage } from '../../../adapters/showMessage';
 
 export const Form = () => {
   const { state, dispatch } = useTaskContext();
@@ -17,15 +19,18 @@ export const Form = () => {
   const nextCycle = getNextCycle(state.currentCycle);
   const nextCycleType = getNextCycleType(nextCycle);
 
+
+
   const handleCreateNewTask = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    showMessage.dismiss();
 
     if (taskNameInput.current === null) return;
 
     const taskName = taskNameInput.current.value.trim();
 
     if (!taskName) {
-      alert('Digite o nome da tarefa');
+      showMessage.warn('Digite o nome da tarefa');
       return;
     }
 
@@ -40,10 +45,15 @@ export const Form = () => {
     };
 
     dispatch({ type: TaskActionsTypes.START_TASK, payload: newTask });
+
+    showMessage.success('Tarefa iniciada');
+
   };
 
   const handleInterruptTask = () => {
+    showMessage.dismiss();
     dispatch({ type: TaskActionsTypes.INTERRUPT_TASK });
+    showMessage.error('Tarefa interrompida');
   };
 
   return (
@@ -59,7 +69,7 @@ export const Form = () => {
         />
       </div>
       <div className='formRow'>
-        <span>Nesse ciclo <strong>foque</strong> por <strong>25 min.</strong></span>
+        <Tips task={state} nextCycleType={nextCycleType} />
       </div>
       {state.currentCycle > 0 && (
         <div className='formRow'>
