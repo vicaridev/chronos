@@ -1,4 +1,3 @@
-import styles from './styles.module.css';
 import { Input } from '../../../components/Input';
 import { Cycles } from '../Cycles';
 import { Button } from '../../../components/Button';
@@ -11,10 +10,13 @@ import { getNextCycleType } from '../../../utils/getNextCycleType';
 import { TaskActionsTypes } from '../../../reducer/actions/taskActions';
 import { Tips } from '../../../components/Tips/tips';
 import { showMessage } from '../../../adapters/showMessage';
+import { Container } from '../../../components/Container';
+import styles from './styles.module.css';
 
 export const Form = () => {
   const { state, dispatch } = useTaskContext();
   const taskNameInput = useRef<HTMLInputElement>(null);
+  const lastTaskName = state.tasks[state.tasks.length - 1]?.name || '';
 
   const nextCycle = getNextCycle(state.currentCycle);
   const nextCycleType = getNextCycleType(nextCycle);
@@ -57,46 +59,50 @@ export const Form = () => {
   };
 
   return (
-    <form onSubmit={handleCreateNewTask} action="" className={styles.form}>
-      <div className='formRow'>
-        <Input
-          labelText='task'
-          id='taskName'
-          type='text'
-          placeholder='Ex.: Estudar para a prova'
-          ref={taskNameInput}
-          disabled={!!state.activeTask}
-        />
-      </div>
-      <div className='formRow'>
-        <Tips task={state} nextCycleType={nextCycleType} />
-      </div>
-      {state.currentCycle > 0 && (
-        <div className='formRow'>
-          <Cycles />
+    <Container>
+      <form onSubmit={handleCreateNewTask} action="" className={styles.form}>
+        <div className={styles.formRow}>
+          <Input
+            labelText='task'
+            id='taskName'
+            type='text'
+            placeholder='Ex.: Estudar para a prova'
+            ref={taskNameInput}
+            disabled={!!state.activeTask}
+            defaultValue={lastTaskName}
+          />
         </div>
-      )}
-      <div className='formRow'>
-        {!state.activeTask ? (
-          <Button
-            type='submit'
-            aria-label='Iniciar nova tarefa'
-            title='Iniciar nova tarefa'
-            icon={<PlayCircleIcon />}
-            key="startTaskTimer"
-          />
-        ) : (
-          <Button
-            type='button'
-            aria-label='Parar tarefa'
-            title='Interromper tarefa atual'
-            color='red'
-            icon={<StopCircleIcon />}
-            onClick={handleInterruptTask}
-            key="resetTaskTimer"
-          />
+        <div className={styles.formRow}>
+          <Tips task={state} nextCycleType={nextCycleType} />
+        </div>
+        {state.currentCycle > 0 && (
+          <div className={styles.formRow}>
+            <Cycles />
+          </div>
         )}
-      </div>
-    </form>
+        <div className={styles.formRow}>
+          {!state.activeTask ? (
+            <Button
+              type='submit'
+              aria-label='Iniciar nova tarefa'
+              title='Iniciar nova tarefa'
+              icon={<PlayCircleIcon />}
+              key="startTaskTimer"
+            />
+          ) : (
+            <Button
+              type='button'
+              aria-label='Parar tarefa'
+              title='Interromper tarefa atual'
+              color='red'
+              icon={<StopCircleIcon />}
+              onClick={handleInterruptTask}
+              key="resetTaskTimer"
+            />
+          )}
+        </div>
+      </form>
+
+    </Container>
   );
 };

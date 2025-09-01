@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Container } from "../../components/Container";
 import { GenericHtml } from "../../components/GenericHtml";
 import { Heading } from "../../components/Heading";
@@ -6,6 +7,9 @@ import { RouterLink } from "../../components/RouterLink";
 
 
 export const AboutPomodoro = () => {
+  useEffect(() => {
+    document.title = 'Entenda a técnica Pomodoro';
+  }, []);
   return (
     <Container>
       <GenericHtml>

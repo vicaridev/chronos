@@ -1,3 +1,4 @@
+import { initialTaskState } from "../contexts/TaskContext/initialTaskState";
 import type { TaskStateModel } from "../models/TaskStateModel";
 import { formatedSecondsToMinutes } from "../utils/formatSecondsToMinutes";
 import { getNextCycle } from "../utils/getNextCycle";
@@ -55,6 +56,11 @@ export const taskReducer = (state: TaskStateModel, action: TaskActionModel) => {
         formatedSecondsRemaining: formatedSecondsToMinutes(secondsRemaining)
       }
     }
+    case TaskActionsTypes.RESET_STATE: {
+      return {...initialTaskState}
+    }
+    case TaskActionsTypes.CHANGE_SETTINGS: {
+      return {...state, config: {...action.payload}}
+    }
   }
-  
 }
